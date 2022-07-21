@@ -1,3 +1,5 @@
+#include <iostream>
+#include <algorithm>
 #include <ctime>
 #include <random>
 #include <cmath>
@@ -14,6 +16,9 @@ class SA {
         std::unordered_set<int> currentVertexSet;
         std::vector<int> currentVertices;
         std::vector<int> remainingVertices;
+
+        // Print vertices of the densest subgraph.
+        void print();
 
         // Insert a random vertex in current vertex set.
         int insertVertex();

@@ -1,5 +1,14 @@
 #include "SA.h"
 
+void SA::print() {
+    std::unordered_set<int>::iterator it;
+    std::cout << "Densest subgraph:" << std::endl;
+    for (it = optimalVertexSet.begin(); it != optimalVertexSet.end(); it++) {
+        std::cout << *it << " ";
+    }
+    std::cout << std::endl;
+}
+
 int SA::insertVertex() {
     if (remainingVertices.size() == 0) {
         return -1;
