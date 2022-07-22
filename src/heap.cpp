@@ -1,0 +1,56 @@
+#include "heap.h"
+
+void Heap::pushUp(int idx) {
+    while (idx > 0 && heap[idx].second < heap[idx/2].second) {
+        nodeMap[heap[idx].first] = idx / 2;
+        nodeMap[heap[idx/2].first] = idx;
+        std::swap(heap[idx], heap[idx/2]);
+        idx /= 2;
+    }
+}
+
+void Heap::pushDown(int idx) {
+    while (2 * idx + 1 < heap.size()) {
+        int k = 2 * idx + 1;
+        if (k + 1 < heap.size() && heap[k+1].second < heap[k].second) {
+            k = k + 1;
+        }
+        if (heap[idx].second > heap[k].second) {
+            nodeMap[heap[idx].first] = k;
+            nodeMap[heap[k].first] = idx;
+            std::swap(heap[idx], heap[k]);
+        } else {
+            break;
+        }
+    }
+}
+
+void Heap::insert(int key, int value) {
+    if (nodeMap.find(key) != nodeMap.end()) {
+        int idx = nodeMap[key];
+        int tmpValue = heap[idx].second;
+        heap[idx].second = value;
+        if (tmpValue > value) {
+            pushDown(idx);
+        } else {
+            pushUp(idx);
+        }
+    } else {
+        heap.push_back(std::pair<int, int>(key, value));
+        nodeMap[key] = heap.size() - 1;
+        pushUp(heap.size() - 1);
+    }
+}
+
+int Heap::pop() {
+    if (heap.size() == 0) {
+        return -1;
+    }
+    int toReturn = heap[0].first;
+    nodeMap.erase(heap[0].first);
+    nodeMap[heap[heap.size()-1].first] = 0;
+    std::swap(heap[0], heap[heap.size()-1]);
+    heap.pop_back();
+    pushDown(0);
+    return toReturn;
+}

@@ -1,8 +1,15 @@
-OBJS=graph.o SA.o main.o
+OBJS=heap.o graph.o SA.o main.o
+TESTHEAP=heap.o heap_test.o
+TESTGRAPH=graph.o graph_test.o
 CC=g++
 CFLAGS=-c -std=c++11 -O3
 
-main:$(OBJS)
+test:$(TESTHEAP) $(TESTGRAPH)
+	$(CC) $(TESTHEAP) -o heap_test -O3
+	$(CC) $(TESTGRAPH) -o graph_test -O3
+	./heap_test
+	./graph_test
+build:$(OBJS)
 	$(CC) $^ -o main -O3
 %.o:src/%.cpp
 	$(CC) $^ $(CFLAGS)
