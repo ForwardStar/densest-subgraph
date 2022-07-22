@@ -21,6 +21,12 @@ class Heap {
         // Pop the element with smallest value.
         int pop();
 
+        // Check whether element is in the heap.
+        bool in(int key);
+
+        // The number of elements in the heap.
+        int size();
+
         Heap() {}
         ~Heap() {}
 };

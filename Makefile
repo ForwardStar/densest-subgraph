@@ -1,6 +1,6 @@
 OBJS=heap.o graph.o SA.o main.o
 TESTHEAP=heap.o heap_test.o
-TESTGRAPH=graph.o graph_test.o
+TESTGRAPH=heap.o graph.o graph_test.o
 CC=g++
 CFLAGS=-c -std=c++11 -O3
 

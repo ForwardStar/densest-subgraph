@@ -1,6 +1,7 @@
 #ifndef GRAPH
 #define GRAPH
 
+#include "heap.h"
 #include <fstream>
 #include <sstream>
 #include <vector>
@@ -9,8 +10,13 @@
 class Graph {
     public:
         int n, m;
+        double edgeDensity;
         std::unordered_map<int, std::vector<int>> edges;
         std::unordered_map<int, int> coreNum;
+        std::unordered_map<int, int> degree;
+
+        // Compute core numbers of all vertices.
+        void coreDecomposition();
 
         // Prune vertices definitely not in densest subgraphs.
         void shrink();

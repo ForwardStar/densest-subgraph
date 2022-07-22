@@ -31,9 +31,9 @@ void Heap::insert(int key, int value) {
         int tmpValue = heap[idx].second;
         heap[idx].second = value;
         if (tmpValue > value) {
-            pushDown(idx);
-        } else {
             pushUp(idx);
+        } else {
+            pushDown(idx);
         }
     } else {
         heap.push_back(std::pair<int, int>(key, value));
@@ -53,4 +53,12 @@ int Heap::pop() {
     heap.pop_back();
     pushDown(0);
     return toReturn;
+}
+
+bool Heap::in(int key) {
+    return nodeMap.find(key) != nodeMap.end();
+}
+
+int Heap::size() {
+    return nodeMap.size();
 }

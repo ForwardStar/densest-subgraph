@@ -21,15 +21,45 @@ void unioN(std::unordered_map<int, int>* parent, int u, int v) {
     }
 }
 
+void Graph::coreDecomposition() {
+    int currentEdgeNum = 0;
+    double currentEdgeDensity = 0;
+    Heap* heap = new Heap();
+    std::unordered_map<int, std::vector<int>>::iterator it;
+    for (it = edges.begin(); it != edges.end(); it++) {
+        degree[it->first] = it->second.size();
+        currentEdgeNum += degree[it->first];
+        heap->insert(it->first, degree[it->first]);
+    }
+    currentEdgeNum /= 2;
+    currentEdgeDensity = double(currentEdgeNum) / n;
+    edgeDensity = currentEdgeDensity;
+    int maxCoreNum = 0;
+    int vertex = heap->pop();
+    while (vertex != -1) {
+        int currentCoreNum = degree[vertex];
+        maxCoreNum = std::max(maxCoreNum, currentCoreNum);
+        coreNum[vertex] = maxCoreNum;
+        std::vector<int>::iterator it1;
+        for (it1 = edges[vertex].begin(); it1 != edges[vertex].end(); it1++) {
+            if (heap->in(*it1)) {
+                currentEdgeNum--;
+                degree[*it1]--;
+                heap->insert(*it1, degree[*it1]);
+            }
+        }
+        currentEdgeDensity = double(currentEdgeNum) / heap->size();
+        edgeDensity = std::max(currentEdgeDensity, edgeDensity);
+        vertex = heap->pop();
+    }
+}
+
 void Graph::shrink() {
     // If the graph is a tree, there is no need to shrink.
     if (m == n - 1) {
         return;
     }
-    // Compute core numbers `k` and approximated maximum density `dmax`.
-    /*
-        TBD
-    */
+    coreDecomposition();
     // Select a minimal graph with deg(v) >= min(kmax, dmax).
     /*
         TBD
