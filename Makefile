@@ -15,4 +15,4 @@ build:$(OBJS)
 	$(CC) $^ $(CFLAGS)
 
 clean:
-	$(RM) *.o main
+	$(RM) *.o main *_test

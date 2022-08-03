@@ -1,5 +1,5 @@
 #include "graph.h"
-
+#include <iostream>
 int find(std::unordered_map<int, int>* parent, int u) {
     if ((*parent)[u] != u) {
         (*parent)[u] = find(parent, (*parent)[u]);
@@ -34,7 +34,7 @@ void Graph::coreDecomposition() {
     currentEdgeNum /= 2;
     currentEdgeDensity = double(currentEdgeNum) / n;
     edgeDensity = currentEdgeDensity;
-    int maxCoreNum = 0;
+    maxCoreNum = 0;
     int vertex = heap->pop();
     while (vertex != -1) {
         int currentCoreNum = degree[vertex];
@@ -61,9 +61,24 @@ void Graph::shrink() {
     }
     coreDecomposition();
     // Select a minimal graph with deg(v) >= min(kmax, dmax).
-    /*
-        TBD
-    */
+    int mink = ceil(std::max(double(maxCoreNum) / 2, edgeDensity));
+    std::unordered_map<int, std::vector<int>>::iterator it;
+    for (it = edges.begin(); it != edges.end();) {
+        if (coreNum[it->first] < mink) {
+            edges.erase(it++);
+            continue;
+        }
+        std::vector<int> newVector;
+        std::vector<int>::iterator it1;
+        for (it1 = it->second.begin(); it1 != it->second.end(); it1++) {
+            if (coreNum[*it1] >= mink) {
+                newVector.push_back(*it1);
+            }
+        }
+        edges[it->first] = newVector;
+        it++;
+    }
+    n = edges.size();
 }
 
 std::vector<Graph*> Graph::decompose() {

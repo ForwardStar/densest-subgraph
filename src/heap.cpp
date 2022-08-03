@@ -1,11 +1,11 @@
 #include "heap.h"
 
 void Heap::pushUp(int idx) {
-    while (idx > 0 && heap[idx].second < heap[idx/2].second) {
-        nodeMap[heap[idx].first] = idx / 2;
-        nodeMap[heap[idx/2].first] = idx;
-        std::swap(heap[idx], heap[idx/2]);
-        idx /= 2;
+    while (idx > 0 && heap[idx].second < heap[(idx-1)/2].second) {
+        nodeMap[heap[idx].first] = (idx - 1) / 2;
+        nodeMap[heap[(idx-1)/2].first] = idx;
+        std::swap(heap[idx], heap[(idx-1)/2]);
+        idx = (idx - 1) / 2;
     }
 }
 
@@ -19,6 +19,7 @@ void Heap::pushDown(int idx) {
             nodeMap[heap[idx].first] = k;
             nodeMap[heap[k].first] = idx;
             std::swap(heap[idx], heap[k]);
+            idx = k;
         } else {
             break;
         }

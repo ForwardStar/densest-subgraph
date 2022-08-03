@@ -15,9 +15,10 @@ int main(int argc, char* argv[]) {
     std::vector<Graph*>::iterator it;
     SA* optimalUnit = nullptr;
     for (it = CCs.begin(); it != CCs.end(); it++) {
+        (*it)->shrink();
         SA* unit = new SA(*it);
         // Time complexity: O(a*n*log_b(d/c)).
-        unit->process(2, 0.99, (*it)->n, 1e-12);
+        unit->process(3, 0.996, (*it)->n, 1e-12);
         if (optimalUnit == nullptr) {
             optimalUnit = unit;
         } else if (optimalUnit->ans < unit->ans) {

@@ -2,6 +2,7 @@
 #define GRAPH
 
 #include "heap.h"
+#include <cmath>
 #include <fstream>
 #include <sstream>
 #include <vector>
@@ -10,6 +11,7 @@
 class Graph {
     public:
         int n, m;
+        int maxCoreNum = 0;
         double edgeDensity;
         std::unordered_map<int, std::vector<int>> edges;
         std::unordered_map<int, int> coreNum;

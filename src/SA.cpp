@@ -1,10 +1,16 @@
 #include "SA.h"
 
 void SA::print() {
+    std::vector<int> ans;
     std::unordered_set<int>::iterator it;
     std::cout << "Densest subgraph:" << std::endl;
     for (it = optimalVertexSet.begin(); it != optimalVertexSet.end(); it++) {
-        std::cout << *it << " ";
+        ans.push_back(*it);
+    }
+    std::sort(ans.begin(), ans.end());
+    std::vector<int>::iterator it1;
+    for (it1 = ans.begin(); it1 != ans.end(); it1++) {
+        std::cout << *it1 << " ";
     }
     std::cout << std::endl;
 }
