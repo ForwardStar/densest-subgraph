@@ -10,7 +10,7 @@ test:$(TESTHEAP) $(TESTGRAPH)
 	./heap_test
 	./graph_test
 build:$(OBJS)
-	$(CC) $^ -o main -O3
+	$(CC) $^ -o main -O3 -lpthread
 %.o:src/%.cpp
 	$(CC) $^ $(CFLAGS)
 
