@@ -7,6 +7,9 @@ void SA::print() {
     for (it = optimalVertexSet.begin(); it != optimalVertexSet.end(); it++) {
         ans.push_back(*it);
     }
+    for (it = fixedVertexSet.begin(); it != fixedVertexSet.end(); it++) {
+        ans.push_back(*it);
+    }
     std::sort(ans.begin(), ans.end());
     std::vector<int>::iterator it1;
     for (it1 = ans.begin(); it1 != ans.end(); it1++) {
@@ -35,7 +38,7 @@ int SA::insertVertex() {
         }
     }
 
-    edgeDensity = double(edgeNum) / currentVertices.size();
+    edgeDensity = double(edgeNum) / (currentVertices.size() + fixedVertexSet.size());
     return vertex;
 }
 
@@ -59,10 +62,10 @@ int SA::removeVertex() {
     }
 
     currentVertexSet.erase(vertex);
-    if (currentVertices.size() == 0) {
+    if (currentVertices.size() == 0 && fixedVertexSet.size() == 0) {
         edgeDensity = 0;
     } else {
-        edgeDensity = edgeNum / currentVertices.size();
+        edgeDensity = double(edgeNum) / (currentVertices.size() + fixedVertexSet.size());
     }
     return vertex;
 }
@@ -134,5 +137,20 @@ SA::SA(Graph* GInput) {
         if (fixedVertexSet.find(it1->first) == fixedVertexSet.end()) {
             remainingVertices.push_back(it1->first);
         }
+    }
+    for (it1 = G->edges.begin(); it1 != G->edges.end(); it1++) {
+        if (fixedVertexSet.find(it1->first) == fixedVertexSet.end()) {
+            continue;
+        }
+        std::vector<int>::iterator it2;
+        for (it2 = it1->second.begin(); it2 != it1->second.end(); it2++) {
+            if (fixedVertexSet.find(*it2) != fixedVertexSet.end()) {
+                edgeNum++;
+            }
+        }
+    }
+    edgeNum /= 2;
+    if (fixedVertexSet.size() != 0) {
+        edgeDensity = double(edgeNum) / fixedVertexSet.size();
     }
 }

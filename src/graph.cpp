@@ -21,7 +21,7 @@ void unioN(std::unordered_map<int, int>* parent, int u, int v) {
     }
 }
 
-double Graph::anchoredDensity() {
+void Graph::anchoredDensity() {
     int currentEdgeNum = 0;
     double currentEdgeDensity = 0;
     Heap* heap = new Heap();
@@ -48,7 +48,7 @@ double Graph::anchoredDensity() {
                 }
             }
         }
-        currentEdgeDensity = double(currentEdgeNum) / heap->size();
+        currentEdgeDensity = double(currentEdgeNum) / (heap->size() + fixedVertexSet.size());
         edgeDensity = std::max(currentEdgeDensity, edgeDensity);
         vertex = heap->pop();
     }
@@ -84,6 +84,36 @@ void Graph::coreDecomposition() {
         currentEdgeDensity = double(currentEdgeNum) / heap->size();
         edgeDensity = std::max(currentEdgeDensity, edgeDensity);
         vertex = heap->pop();
+    }
+}
+
+void Graph::shrinkAnchored() {
+    std::unordered_map<int, std::vector<int>>::iterator it;
+    for (it = edges.begin(); it != edges.end(); it++) {
+        degree[it->first] = it->second.size();
+    }
+    bool terminated = false;
+    while (!terminated) {
+        terminated = true;
+        for (it = edges.begin(); it != edges.end();) {
+            if (degree[it->first] <= edgeDensity && fixedVertexSet.find(it->first) == fixedVertexSet.end()) {
+                terminated = false;
+                edges.erase(it++);
+                continue;
+            }
+            it++;
+        }
+        for (it = edges.begin(); it != edges.end(); it++) {
+            std::vector<int> newVector;
+            std::vector<int>::iterator it1;
+            for (it1 = it->second.begin(); it1 != it->second.end(); it1++) {
+                if (edges.find(*it1) != edges.end()) {
+                    newVector.push_back(*it1);
+                }
+            }
+            it->second = newVector;
+            degree[it->first] = newVector.size();
+        }
     }
 }
 

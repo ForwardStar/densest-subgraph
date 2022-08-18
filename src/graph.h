@@ -19,10 +19,13 @@ class Graph {
         std::unordered_map<int, int> coreNum;
         std::unordered_map<int, int> degree;
         // Compute an approximated anchored density.
-        double anchoredDensity();
+        void anchoredDensity();
 
         // Compute core numbers of all vertices.
         void coreDecomposition();
+
+        // Prune vertices definitely not in anchored densest subgraph; called after anchoredDensity().
+        void shrinkAnchored();
 
         // Prune vertices definitely not in densest subgraphs.
         void shrink();
