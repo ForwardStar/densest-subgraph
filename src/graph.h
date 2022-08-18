@@ -6,6 +6,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <unordered_set>
 #include <unordered_map>
 
 class Graph {
@@ -13,9 +14,12 @@ class Graph {
         int n, m;
         int maxCoreNum = 0;
         double edgeDensity;
+        std::unordered_set<int> fixedVertexSet;
         std::unordered_map<int, std::vector<int>> edges;
         std::unordered_map<int, int> coreNum;
         std::unordered_map<int, int> degree;
+        // Compute an approximated anchored density.
+        double anchoredDensity();
 
         // Compute core numbers of all vertices.
         void coreDecomposition();

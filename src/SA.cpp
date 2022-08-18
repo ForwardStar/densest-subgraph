@@ -30,6 +30,9 @@ int SA::insertVertex() {
         if (currentVertexSet.find(*it) != currentVertexSet.end()) {
             edgeNum++;
         }
+        if (fixedVertexSet.find(*it) != fixedVertexSet.end()) {
+            edgeNum++;
+        }
     }
 
     edgeDensity = double(edgeNum) / currentVertices.size();
@@ -50,6 +53,9 @@ int SA::removeVertex() {
         if (currentVertexSet.find(*it) != currentVertexSet.end()) {
             edgeNum--;
         }
+        if (fixedVertexSet.find(*it) != fixedVertexSet.end()) {
+            edgeNum--;
+        }
     }
 
     currentVertexSet.erase(vertex);
@@ -62,14 +68,14 @@ int SA::removeVertex() {
 }
 
 void SA::process(int times, double decayRate, double initialTemp, double minTemp) {
-    if (G->m == G->n - 1) {
-        ans = double(G->m) / G->n;
-        return;
-    }
-    if (G->m == G->n) {
-        ans = 1;
-        return;
-    }
+    // if (G->m == G->n - 1) {
+    //     ans = double(G->m) / G->n;
+    //     return;
+    // }
+    // if (G->m == G->n) {
+    //     ans = 1;
+    //     return;
+    // }
     double temperature = initialTemp;
     if (times == 0) {
         return;
@@ -119,8 +125,14 @@ void SA::process(int times, double decayRate, double initialTemp, double minTemp
 SA::SA(Graph* GInput) {
     srand(time(0));
     G = GInput;
-    std::unordered_map<int, std::vector<int>>::iterator it;
-    for (it = G->edges.begin(); it != G->edges.end(); it++) {
-        remainingVertices.push_back(it->first);
+    std::unordered_set<int>::iterator it;
+    for (it = G->fixedVertexSet.begin(); it != G->fixedVertexSet.end(); it++) {
+        fixedVertexSet.insert(*it);
+    }
+    std::unordered_map<int, std::vector<int>>::iterator it1;
+    for (it1 = G->edges.begin(); it1 != G->edges.end(); it1++) {
+        if (fixedVertexSet.find(it1->first) == fixedVertexSet.end()) {
+            remainingVertices.push_back(it1->first);
+        }
     }
 }

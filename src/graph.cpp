@@ -1,5 +1,5 @@
 #include "graph.h"
-#include <iostream>
+
 int find(std::unordered_map<int, int>* parent, int u) {
     if ((*parent)[u] != u) {
         (*parent)[u] = find(parent, (*parent)[u]);
@@ -18,6 +18,39 @@ void unioN(std::unordered_map<int, int>* parent, int u, int v) {
     v = find(parent, v);
     if (u != v) {
         (*parent)[u] = v;
+    }
+}
+
+double Graph::anchoredDensity() {
+    int currentEdgeNum = 0;
+    double currentEdgeDensity = 0;
+    Heap* heap = new Heap();
+    std::unordered_map<int, std::vector<int>>::iterator it;
+    for (it = edges.begin(); it != edges.end(); it++) {
+        degree[it->first] = it->second.size();
+        currentEdgeNum += degree[it->first];
+        if (fixedVertexSet.find(it->first) == fixedVertexSet.end()) {
+            heap->insert(it->first, degree[it->first]);
+        }
+    }
+    currentEdgeNum /= 2;
+    currentEdgeDensity = double(currentEdgeNum) / n;
+    edgeDensity = currentEdgeDensity;
+    int vertex = heap->pop();
+    while (vertex != -1) {
+        std::vector<int>::iterator it1;
+        for (it1 = edges[vertex].begin(); it1 != edges[vertex].end(); it1++) {
+            if (fixedVertexSet.find(*it1) == fixedVertexSet.end() || heap->in(*it1)) {
+                currentEdgeNum--;
+                degree[*it1]--;
+                if (heap->in(*it1)) {
+                    heap->insert(*it1, degree[*it1]);
+                }
+            }
+        }
+        currentEdgeDensity = double(currentEdgeNum) / heap->size();
+        edgeDensity = std::max(currentEdgeDensity, edgeDensity);
+        vertex = heap->pop();
     }
 }
 

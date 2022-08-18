@@ -12,6 +12,7 @@ class SA {
         Graph* G;
         int edgeNum = 0;
         double edgeDensity;
+        std::unordered_set<int> fixedVertexSet;
         std::unordered_set<int> optimalVertexSet;
         std::unordered_set<int> currentVertexSet;
         std::vector<int> currentVertices;
