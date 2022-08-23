@@ -125,6 +125,86 @@ void SA::process(int times, double decayRate, double initialTemp, double minTemp
     process(times-1, decayRate, initialTemp, minTemp);
 }
 
+void SA::kprocess(int k, int times, double decayRate, double initialTemp, double minTemp) {
+    double temperature = initialTemp;
+    if (times == 0) {
+        return;
+    }
+    if (currentVertices.size() == 0) {
+        for (int i = 0; i < k; ++i) {
+            int u = insertVertex();
+        }
+    }
+    if (edgeDensity > ans) {
+        ans = edgeDensity;
+        optimalVertexSet.clear();
+        std::vector<int>::iterator it;
+        for (it = currentVertices.begin(); it != currentVertices.end(); it++) {
+            optimalVertexSet.insert(*it);
+        }
+    }
+    if (k == 0 || remainingVertices.size() == 0) {
+        return;
+    }
+    while (temperature > minTemp) {
+        double previousEdgeNum = edgeNum;
+        double previousDensity = edgeDensity;
+        int idx1 = rand() % currentVertices.size();
+        int idx2 = rand() % remainingVertices.size();
+        int vertex1 = *(currentVertices.begin() + idx1);
+        int vertex2 = *(remainingVertices.begin() + idx2);
+        std::vector<int>::iterator it;
+        for (it = G->edges[vertex1].begin(); it != G->edges[vertex1].end(); it++) {
+            if (currentVertexSet.find(*it) != currentVertexSet.end()) {
+                edgeNum--;
+            }
+            if (fixedVertexSet.find(*it) != fixedVertexSet.end()) {
+                edgeNum--;
+            }
+        }
+        currentVertexSet.erase(vertex1);
+
+        for (it = G->edges[vertex2].begin(); it != G->edges[vertex2].end(); it++) {
+            if (currentVertexSet.find(*it) != currentVertexSet.end()) {
+                edgeNum++;
+            }
+            if (fixedVertexSet.find(*it) != fixedVertexSet.end()) {
+                edgeNum++;
+            }
+        }
+        currentVertexSet.insert(vertex2);
+        int temp = *(currentVertices.begin() + idx1);
+        *(currentVertices.begin() + idx1) = *(remainingVertices.begin() + idx2);
+        *(remainingVertices.begin() + idx2) = temp;
+
+        edgeDensity = double(edgeNum) / (k + fixedVertexSet.size());
+        if (edgeDensity > previousDensity) {
+            if (edgeDensity > ans) {
+                ans = edgeDensity;
+                optimalVertexSet.clear();
+                std::vector<int>::iterator it;
+                for (it = currentVertices.begin(); it != currentVertices.end(); it++) {
+                    optimalVertexSet.insert(*it);
+                }
+            }
+        } else {
+            if (exp((edgeDensity - previousDensity) / temperature) * RAND_MAX > rand()) {
+                // Do nothing.
+            } else {
+                currentVertexSet.erase(vertex2);
+                currentVertexSet.insert(vertex1);
+                int temp = *(currentVertices.begin() + idx1);
+                *(currentVertices.begin() + idx1) = *(remainingVertices.begin() + idx2);
+                *(remainingVertices.begin() + idx2) = temp;
+                edgeNum = previousEdgeNum;
+                edgeDensity = previousDensity;
+            }
+        }
+        temperature *= decayRate;
+    }
+    kprocess(k, times-1, decayRate, initialTemp, minTemp);
+}
+
 SA::SA(Graph* GInput) {
     srand(time(0));
     G = GInput;

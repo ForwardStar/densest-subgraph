@@ -1,4 +1,5 @@
 #include "graph.h"
+#include <iostream>
 
 int find(std::unordered_map<int, int>* parent, int u) {
     if ((*parent)[u] != u) {
@@ -40,7 +41,7 @@ void Graph::anchoredDensity() {
     while (vertex != -1) {
         std::vector<int>::iterator it1;
         for (it1 = edges[vertex].begin(); it1 != edges[vertex].end(); it1++) {
-            if (fixedVertexSet.find(*it1) == fixedVertexSet.end() || heap->in(*it1)) {
+            if (fixedVertexSet.find(*it1) != fixedVertexSet.end() || heap->in(*it1)) {
                 currentEdgeNum--;
                 degree[*it1]--;
                 if (heap->in(*it1)) {
@@ -52,6 +53,7 @@ void Graph::anchoredDensity() {
         edgeDensity = std::max(currentEdgeDensity, edgeDensity);
         vertex = heap->pop();
     }
+    delete heap;
 }
 
 void Graph::coreDecomposition() {
@@ -115,6 +117,12 @@ void Graph::shrinkAnchored() {
             degree[it->first] = newVector.size();
         }
     }
+    n = edges.size();
+    m = 0;
+    for (it = edges.begin(); it != edges.end(); it++) {
+        m += it->second.size();
+    }
+    m /= 2;
 }
 
 void Graph::shrink() {

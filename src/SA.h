@@ -27,8 +27,11 @@ class SA {
         // Remove a random vertex in current vertex set.
         int removeVertex();
 
-        // Process returns the maximum edge density of graph `G`.
+        // process returns the maximum edge density of graph `G`.
         void process(int times, double decayRate, double initialTemp, double minTemp);
+
+        // kprocess returns the maximum edge density of graph `G` with size k.
+        void kprocess(int k, int times, double decayRate, double initialTemp, double minTemp);
 
         SA(Graph* GInput);
         ~SA() {}

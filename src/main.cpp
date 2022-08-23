@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
         G = new Graph(argv[1]);
         G->coreDecomposition();
         std::cout << "Edge density by naive greedy: " << G->edgeDensity << std::endl;
-        G->shrinkAnchored();
+        G->shrink();
         std::vector<Graph*> CCs = G->decompose();
         std::vector<Graph*>::iterator it;
         SA* optimalUnit = nullptr;
@@ -60,10 +60,18 @@ int main(int argc, char* argv[]) {
         }
         G->fixedVertexSet = fixedVertexSet;
         G->anchoredDensity();
-        std::cout << "Edge density by naive greedy: " << G->edgeDensity << std::endl;
+        std::cout << "Edge density by revised greedy: " << G->edgeDensity << std::endl;
         G->shrinkAnchored();
-        SA* unit = new SA(G);
-        unit->process(5, 0.998, 10000, 1e-12);
+        // SA* unit = new SA(G);
+        // unit->process(5, 0.998, 10000, 1e-12);
+        SA* unit = nullptr;
+        for (int i = 0; i <= G->n - fixedVertexSet.size(); i++) {
+            SA* unit1 = new SA(G);
+            unit1->kprocess(i, i / 1000 + 1, 0.99, 1000, 1e-10);
+            if (unit == nullptr || unit->ans < unit1->ans) {
+                unit = unit1;
+            }
+        }
         std::cout << "Maximum edge density: " << unit->ans << std::endl;
         unit->print();
         delete unit;
